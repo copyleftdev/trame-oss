@@ -19,12 +19,20 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
+            artifact: trame-linux-amd64
+            binary: trame
           - target: x86_64-apple-darwin
             os: macos-latest
+            artifact: trame-darwin-amd64
+            binary: trame
           - target: aarch64-apple-darwin
             os: macos-latest
+            artifact: trame-darwin-arm64
+            binary: trame
           - target: x86_64-pc-windows-msvc
             os: windows-latest
+            artifact: trame-windows-amd64.exe
+            binary: trame.exe
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -34,13 +42,14 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Build release binary
         run: cargo build --release --package trame-cli --target ${{ matrix.target }}
+      - name: Rename binary
+        shell: bash
+        run: cp target/${{ matrix.target }}/release/${{ matrix.binary }} ${{ matrix.artifact }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: trame-${{ matrix.target }}
-          path: |
-            target/${{ matrix.target }}/release/trame
-            target/${{ matrix.target }}/release/trame.exe
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
 
   release:
     name: Create Release
@@ -51,8 +60,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release
+          find artifacts -type f -exec cp {} release/ \;
+          ls -la release/
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**/*
+          files: release/*
           generate_release_notes: true
