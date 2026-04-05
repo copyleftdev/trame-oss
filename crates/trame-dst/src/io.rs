@@ -385,13 +385,11 @@ impl SimulatedStorage for MemStorage {
                 result.extend_from_slice(&data[start..]);
             }
             result.resize(len as usize, 0);
-            self.total_read
-                .fetch_add(u64::from(len), Ordering::Release);
+            self.total_read.fetch_add(u64::from(len), Ordering::Release);
             return Ok(result);
         }
         let result = data[start..end].to_vec();
-        self.total_read
-            .fetch_add(u64::from(len), Ordering::Release);
+        self.total_read.fetch_add(u64::from(len), Ordering::Release);
         Ok(result)
     }
 

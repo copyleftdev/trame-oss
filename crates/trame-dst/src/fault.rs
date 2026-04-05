@@ -639,8 +639,8 @@ impl FaultConfig {
             network_delay_max: 1000,
             clock_skew_min_nanos: -5_000_000_000, // -5s
             clock_skew_max_nanos: 5_000_000_000,  // +5s
-            clock_jump_min_nanos: 100_000_000,     // 100ms
-            clock_jump_max_nanos: 30_000_000_000,  // 30s
+            clock_jump_min_nanos: 100_000_000,    // 100ms
+            clock_jump_max_nanos: 30_000_000_000, // 30s
         }
     }
 
@@ -869,9 +869,10 @@ impl FaultInjector {
         // Build the action
         let id = self.allocate_fault_id();
         let duration_ticks = if fault_type.has_duration() {
-            let dur = self
-                .prng
-                .range(self.config.partition_duration_min, self.config.partition_duration_max);
+            let dur = self.prng.range(
+                self.config.partition_duration_min,
+                self.config.partition_duration_max,
+            );
             Some(dur)
         } else {
             None
@@ -1056,7 +1057,10 @@ mod tests {
 
         let run1 = run(1);
         let run2 = run(2);
-        assert_ne!(run1, run2, "Different seeds should produce different faults");
+        assert_ne!(
+            run1, run2,
+            "Different seeds should produce different faults"
+        );
     }
 
     // -----------------------------------------------------------------------
@@ -1072,9 +1076,7 @@ mod tests {
         config
             .probabilities
             .insert(FaultType::StorageWriteFailure, 1.0);
-        config
-            .cooldowns
-            .insert(FaultType::StorageWriteFailure, 50);
+        config.cooldowns.insert(FaultType::StorageWriteFailure, 50);
 
         let mut injector = FaultInjector::new(prng, config);
 

@@ -71,6 +71,7 @@ fn zero_pad(n: u64, width: usize) -> Vec<u8> {
 }
 
 /// Generate a single random segment body (the elements after the segment ID).
+#[allow(clippy::cast_possible_truncation)]
 fn random_segment_body(rng: &mut SplitMix64, delims: &DelimiterSet) -> Vec<Vec<u8>> {
     let elem_count = rng.range(1, 8) as usize;
     (0..elem_count)
@@ -107,6 +108,7 @@ fn generate_valid_x12(rng: &mut SplitMix64) -> Vec<u8> {
 }
 
 /// Generate a structurally valid X12 document with the given delimiters.
+#[allow(clippy::too_many_lines, clippy::cast_possible_truncation)]
 fn generate_x12_with_delimiters(rng: &mut SplitMix64, delims: &DelimiterSet) -> Vec<u8> {
     let e = delims.element;
     let s = delims.segment;
@@ -144,38 +146,38 @@ fn generate_x12_with_delimiters(rng: &mut SplitMix64, delims: &DelimiterSet) -> 
     // ISA segment ID
     buf.extend_from_slice(b"ISA");
     buf.push(e);
-    buf.extend_from_slice(&auth_qual);   // 01
+    buf.extend_from_slice(&auth_qual); // 01
     buf.push(e);
-    buf.extend_from_slice(&auth_info);   // 02
+    buf.extend_from_slice(&auth_info); // 02
     buf.push(e);
-    buf.extend_from_slice(&sec_qual);    // 03
+    buf.extend_from_slice(&sec_qual); // 03
     buf.push(e);
-    buf.extend_from_slice(&sec_info);    // 04
+    buf.extend_from_slice(&sec_info); // 04
     buf.push(e);
-    buf.extend_from_slice(&snd_qual);    // 05
+    buf.extend_from_slice(&snd_qual); // 05
     buf.push(e);
-    buf.extend_from_slice(&snd_id);      // 06
+    buf.extend_from_slice(&snd_id); // 06
     buf.push(e);
-    buf.extend_from_slice(&rcv_qual);    // 07
+    buf.extend_from_slice(&rcv_qual); // 07
     buf.push(e);
-    buf.extend_from_slice(&rcv_id);      // 08
+    buf.extend_from_slice(&rcv_id); // 08
     buf.push(e);
-    buf.extend_from_slice(&date);        // 09
+    buf.extend_from_slice(&date); // 09
     buf.push(e);
-    buf.extend_from_slice(&time);        // 10
+    buf.extend_from_slice(&time); // 10
     buf.push(e);
-    buf.extend_from_slice(rep_sep);      // 11
+    buf.extend_from_slice(rep_sep); // 11
     buf.push(e);
-    buf.extend_from_slice(&version);     // 12
+    buf.extend_from_slice(&version); // 12
     buf.push(e);
     buf.extend_from_slice(&isa_control); // 13
     buf.push(e);
-    buf.extend_from_slice(&ack);         // 14
+    buf.extend_from_slice(&ack); // 14
     buf.push(e);
-    buf.extend_from_slice(&usage);       // 15
+    buf.extend_from_slice(&usage); // 15
     buf.push(e);
-    buf.push(c);                         // 16 — component separator (1 byte)
-    buf.push(s);                         // segment terminator
+    buf.push(c); // 16 — component separator (1 byte)
+    buf.push(s); // segment terminator
 
     // The ISA should now be exactly 106 bytes.
     debug_assert_eq!(buf.len(), 106, "ISA must be 106 bytes, got {}", buf.len());
@@ -190,21 +192,35 @@ fn generate_x12_with_delimiters(rng: &mut SplitMix64, delims: &DelimiterSet) -> 
         let func_id = *rng.choose(func_ids.as_slice());
 
         // GS segment
-        push_segment(&mut buf, e, s, b"GS", &[
-            func_id,
-            b"SENDER",
-            b"RECEIVER",
-            b"20210901",
-            b"1234",
-            &gs_control,
-            b"X",
-            b"005010",
-        ]);
+        push_segment(
+            &mut buf,
+            e,
+            s,
+            b"GS",
+            &[
+                func_id,
+                b"SENDER",
+                b"RECEIVER",
+                b"20210901",
+                b"1234",
+                &gs_control,
+                b"X",
+                b"005010",
+            ],
+        );
         maybe_push_line_ending(rng, &mut buf);
 
         for t in 0..num_txns {
             let st_control = zero_pad((t + 1) as u64, 4);
-            let txn_ids = [b"837" as &[u8], b"835", b"270", b"271", b"276", b"277", b"999"];
+            let txn_ids = [
+                b"837" as &[u8],
+                b"835",
+                b"270",
+                b"271",
+                b"276",
+                b"277",
+                b"999",
+            ];
             let txn_id = *rng.choose(txn_ids.as_slice());
 
             // ST segment
@@ -213,11 +229,22 @@ fn generate_x12_with_delimiters(rng: &mut SplitMix64, delims: &DelimiterSet) -> 
 
             // Random body segments (1-10)
             let body_count = rng.range(1, 10) as usize;
-            let seg_ids = [b"BHT" as &[u8], b"CLM", b"NM1", b"DTP", b"SV1", b"REF", b"DMG", b"SBR", b"HI", b"LX"];
+            let seg_ids = [
+                b"BHT" as &[u8],
+                b"CLM",
+                b"NM1",
+                b"DTP",
+                b"SV1",
+                b"REF",
+                b"DMG",
+                b"SBR",
+                b"HI",
+                b"LX",
+            ];
             for _ in 0..body_count {
                 let seg_id = *rng.choose(seg_ids.as_slice());
                 let body = random_segment_body(rng, delims);
-                let body_refs: Vec<&[u8]> = body.iter().map(|v| v.as_slice()).collect();
+                let body_refs: Vec<&[u8]> = body.iter().map(Vec::as_slice).collect();
                 push_segment(&mut buf, e, s, seg_id, &body_refs);
                 maybe_push_line_ending(rng, &mut buf);
             }
@@ -255,10 +282,9 @@ fn push_segment(buf: &mut Vec<u8>, elem_sep: u8, seg_term: u8, id: &[u8], elemen
 /// Optionally push CR/LF whitespace between segments.
 fn maybe_push_line_ending(rng: &mut SplitMix64, buf: &mut Vec<u8>) {
     match rng.range(0, 3) {
-        0 => {} // no line ending
         1 => buf.push(b'\n'),
         2 => buf.extend_from_slice(b"\r\n"),
-        _ => {}
+        _ => {} // no line ending
     }
 }
 
@@ -290,6 +316,7 @@ const ALL_MUTATIONS: &[MutationKind] = &[
 ];
 
 /// Apply a random mutation to a byte buffer, returning the mutated copy.
+#[allow(clippy::cast_possible_truncation)]
 fn apply_mutation(rng: &mut SplitMix64, input: &[u8], kind: MutationKind) -> Vec<u8> {
     match kind {
         MutationKind::Truncate => {
@@ -347,8 +374,8 @@ fn apply_mutation(rng: &mut SplitMix64, input: &[u8], kind: MutationKind) -> Vec
             }
             let mut data = input.to_vec();
             // Replace all occurrences of one delimiter with another
-            let from = *rng.choose(&[b'*', b'~', b':']);
-            let to = *rng.choose(&[b'|', b'^', b'+', b'!']);
+            let from = *rng.choose(b"*~:");
+            let to = *rng.choose(b"|^+!");
             for b in &mut data {
                 if *b == from {
                     *b = to;
@@ -356,9 +383,7 @@ fn apply_mutation(rng: &mut SplitMix64, input: &[u8], kind: MutationKind) -> Vec
             }
             data
         }
-        MutationKind::RemoveTerminators => {
-            input.iter().copied().filter(|&b| b != b'~').collect()
-        }
+        MutationKind::RemoveTerminators => input.iter().copied().filter(|&b| b != b'~').collect(),
         MutationKind::DuplicateSegment => {
             if input.is_empty() {
                 return Vec::new();
@@ -386,39 +411,26 @@ fn apply_mutation(rng: &mut SplitMix64, input: &[u8], kind: MutationKind) -> Vec
 fn check_no_panic(input: &[u8]) -> bool {
     // Try Parser::new (auto-detect)
     let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        match Parser::new(input) {
-            Ok(parser) => {
-                for seg_result in parser {
-                    match seg_result {
-                        Ok(seg) => {
-                            let _ = seg.id();
-                            let _ = seg.element_count();
-                            for i in 0..seg.element_count() {
-                                let _ = seg.element(i);
-                                let _ = seg.sub_elements(i);
-                            }
-                            let _ = seg.raw();
-                        }
-                        Err(_) => {}
-                    }
+        if let Ok(parser) = Parser::new(input) {
+            for seg in parser.flatten() {
+                let _ = seg.id();
+                let _ = seg.element_count();
+                for i in 0..seg.element_count() {
+                    let _ = seg.element(i);
+                    let _ = seg.sub_elements(i);
                 }
+                let _ = seg.raw();
             }
-            Err(_) => {}
         }
     }));
 
     // Try Parser::with_delimiters (explicit)
     let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         let parser = Parser::with_delimiters(input, Delimiters::default());
-        for seg_result in parser {
-            match seg_result {
-                Ok(seg) => {
-                    let _ = seg.id();
-                    let _ = seg.element_count();
-                    let _ = seg.raw();
-                }
-                Err(_) => {}
-            }
+        for seg in parser.flatten() {
+            let _ = seg.id();
+            let _ = seg.element_count();
+            let _ = seg.raw();
         }
     }));
 
@@ -439,9 +451,8 @@ fn check_no_panic(input: &[u8]) -> bool {
 /// Returns None on success, Some(message) on failure.
 fn check_roundtrip(input: &[u8]) -> Option<String> {
     // Parse the input into interchanges
-    let interchanges = match Interchange::parse(input) {
-        Ok(ic) => ic,
-        Err(_) => return None, // Not a valid interchange, skip
+    let Ok(interchanges) = Interchange::parse(input) else {
+        return None; // Not a valid interchange, skip
     };
 
     if interchanges.is_empty() {
@@ -449,9 +460,8 @@ fn check_roundtrip(input: &[u8]) -> Option<String> {
     }
 
     // Write back out
-    let delims = match Delimiters::detect(input) {
-        Ok(d) => d,
-        Err(_) => return None,
+    let Ok(delims) = Delimiters::detect(input) else {
+        return None;
     };
 
     let mut writer = Writer::new(delims);
@@ -511,7 +521,12 @@ fn check_roundtrip(input: &[u8]) -> Option<String> {
                     gb.transaction_sets.len()
                 ));
             }
-            for (t, (ta, tb)) in ga.transaction_sets.iter().zip(gb.transaction_sets.iter()).enumerate() {
+            for (t, (ta, tb)) in ga
+                .transaction_sets
+                .iter()
+                .zip(gb.transaction_sets.iter())
+                .enumerate()
+            {
                 if ta.st != tb.st {
                     return Some(format!("ST mismatch at ic {i} grp {g} txn {t}"));
                 }
@@ -568,12 +583,8 @@ fn check_determinism(input: &[u8]) -> Option<String> {
 
     // Also check Interchange::parse determinism (wrapped in catch_unwind
     // because id_str() can panic on non-UTF-8 mutated input).
-    let ic1 = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        Interchange::parse(input)
-    }));
-    let ic2 = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        Interchange::parse(input)
-    }));
+    let ic1 = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| Interchange::parse(input)));
+    let ic2 = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| Interchange::parse(input)));
     match (ic1, ic2) {
         (Ok(Ok(a)), Ok(Ok(b))) => {
             if a.len() != b.len() {
@@ -582,7 +593,10 @@ fn check_determinism(input: &[u8]) -> Option<String> {
         }
         (Ok(Err(e1)), Ok(Err(e2))) => {
             if e1.kind != e2.kind {
-                return Some(format!("error kind differs: {:?} vs {:?}", e1.kind, e2.kind));
+                return Some(format!(
+                    "error kind differs: {:?} vs {:?}",
+                    e1.kind, e2.kind
+                ));
             }
         }
         (Err(_), Err(_)) => {
@@ -599,13 +613,12 @@ fn check_determinism(input: &[u8]) -> Option<String> {
     None
 }
 
-/// Collect raw segment bytes using Parser::with_delimiters (default delimiters).
+/// Collect raw segment bytes using `Parser::with_delimiters` (default delimiters).
 fn collect_segments(input: &[u8]) -> Vec<Vec<u8>> {
-    let delims = Delimiters::detect(input)
-        .unwrap_or_default();
+    let delims = Delimiters::detect(input).unwrap_or_default();
     let parser = Parser::with_delimiters(input, delims);
     parser
-        .filter_map(|r| r.ok())
+        .filter_map(std::result::Result::ok)
         .map(|seg| seg.raw().to_vec())
         .collect()
 }
@@ -645,7 +658,7 @@ fn check_delimiter_consistency(input: &[u8]) -> Option<String> {
 fn check_segment_count(input: &[u8]) -> Option<String> {
     let delims = Delimiters::detect(input).unwrap_or_default();
     let parser = Parser::with_delimiters(input, delims);
-    let count = parser.filter_map(|r| r.ok()).count();
+    let count = parser.filter_map(std::result::Result::ok).count();
     if count > input.len() {
         return Some(format!(
             "segment count ({count}) exceeds input byte count ({})",
@@ -655,23 +668,19 @@ fn check_segment_count(input: &[u8]) -> Option<String> {
     None
 }
 
-/// P6: Element Preservation — for each successfully parsed segment, the raw()
+/// P6: Element Preservation — for each successfully parsed segment, the `raw()`
 /// bytes should be found within the input (zero-copy guarantee).
 fn check_element_preservation(input: &[u8]) -> Option<String> {
     // Only meaningful when using the input buffer directly (not with_delimiters)
-    let parser = match Parser::new(input) {
-        Ok(p) => p,
-        Err(_) => return None,
+    let Ok(parser) = Parser::new(input) else {
+        return None;
     };
 
     let input_start = input.as_ptr() as usize;
     let input_end = input_start + input.len();
 
     for seg_result in parser {
-        let seg = match seg_result {
-            Ok(s) => s,
-            Err(_) => continue,
-        };
+        let Ok(seg) = seg_result else { continue };
         let raw = seg.raw();
         let raw_start = raw.as_ptr() as usize;
         let raw_end = raw_start + raw.len();
@@ -733,9 +742,9 @@ fn run_vopr_campaign(
 
             // Check original
             if let Some(msg) = checker(&input, seed, doc_idx) {
-                stats.failures.push(format!(
-                    "seed={seed} doc={doc_idx} (original): {msg}"
-                ));
+                stats
+                    .failures
+                    .push(format!("seed={seed} doc={doc_idx} (original): {msg}"));
             }
 
             // Check all mutations
@@ -776,9 +785,9 @@ fn run_vopr_valid_only(
             stats.total_docs += 1;
 
             if let Some(msg) = checker(&input, seed, doc_idx) {
-                stats.failures.push(format!(
-                    "seed={seed} doc={doc_idx}: {msg}"
-                ));
+                stats
+                    .failures
+                    .push(format!("seed={seed} doc={doc_idx}: {msg}"));
             }
         }
     }
@@ -786,13 +795,7 @@ fn run_vopr_valid_only(
     stats
 }
 
-fn print_vopr_summary(
-    label: &str,
-    seeds: u64,
-    docs: u64,
-    mutations: u64,
-    failures: &[String],
-) {
+fn print_vopr_summary(label: &str, seeds: u64, docs: u64, mutations: u64, failures: &[String]) {
     println!(
         "VOPR: {label}: {seeds} seeds x {docs} docs = {} documents, {mutations} mutations, {} failures",
         seeds * docs,
@@ -825,7 +828,13 @@ fn vopr_parser_no_panic_100_seeds() {
         }
     });
 
-    print_vopr_summary("no-panic", seeds, docs, stats.total_mutations, &stats.failures);
+    print_vopr_summary(
+        "no-panic",
+        seeds,
+        docs,
+        stats.total_mutations,
+        &stats.failures,
+    );
     assert!(
         stats.failures.is_empty(),
         "P1 (No Panic) violated: {} failures out of {} docs + {} mutations",
@@ -841,11 +850,15 @@ fn vopr_roundtrip_100_seeds() {
     let docs = vopr_docs();
 
     // Round-trip only applies to valid (unmutated) documents
-    let stats = run_vopr_valid_only(seeds, docs, |input, _seed, _doc| {
-        check_roundtrip(input)
-    });
+    let stats = run_vopr_valid_only(seeds, docs, |input, _seed, _doc| check_roundtrip(input));
 
-    print_vopr_summary("roundtrip", seeds, docs, stats.total_mutations, &stats.failures);
+    print_vopr_summary(
+        "roundtrip",
+        seeds,
+        docs,
+        stats.total_mutations,
+        &stats.failures,
+    );
     assert!(
         stats.failures.is_empty(),
         "P2 (Round-trip) violated: {} failures out of {} docs",
@@ -859,11 +872,15 @@ fn vopr_determinism_100_seeds() {
     let seeds = vopr_seeds();
     let docs = vopr_docs();
 
-    let stats = run_vopr_campaign(seeds, docs, |input, _seed, _doc| {
-        check_determinism(input)
-    });
+    let stats = run_vopr_campaign(seeds, docs, |input, _seed, _doc| check_determinism(input));
 
-    print_vopr_summary("determinism", seeds, docs, stats.total_mutations, &stats.failures);
+    print_vopr_summary(
+        "determinism",
+        seeds,
+        docs,
+        stats.total_mutations,
+        &stats.failures,
+    );
     assert!(
         stats.failures.is_empty(),
         "P3 (Determinism) violated: {} failures out of {} docs + {} mutations",
@@ -880,11 +897,31 @@ fn vopr_adversarial_delimiters() {
 
     // Unusual delimiters
     let unusual_delims: Vec<DelimiterSet> = vec![
-        DelimiterSet { element: b'|', sub_element: b'+', segment: b'!' },
-        DelimiterSet { element: b'^', sub_element: b'@', segment: b'#' },
-        DelimiterSet { element: b'\\', sub_element: b'/', segment: b'=' },
-        DelimiterSet { element: b'<', sub_element: b'>', segment: b';' },
-        DelimiterSet { element: b'{', sub_element: b'}', segment: b'`' },
+        DelimiterSet {
+            element: b'|',
+            sub_element: b'+',
+            segment: b'!',
+        },
+        DelimiterSet {
+            element: b'^',
+            sub_element: b'@',
+            segment: b'#',
+        },
+        DelimiterSet {
+            element: b'\\',
+            sub_element: b'/',
+            segment: b'=',
+        },
+        DelimiterSet {
+            element: b'<',
+            sub_element: b'>',
+            segment: b';',
+        },
+        DelimiterSet {
+            element: b'{',
+            sub_element: b'}',
+            segment: b'`',
+        },
     ];
 
     let mut total_docs = 0u64;
@@ -957,20 +994,51 @@ fn vopr_massive_interchange() {
     buf.extend_from_slice(isa_raw);
 
     // GS
-    push_segment(&mut buf, e, s, b"GS", &[
-        b"HP", b"SENDER", b"RECEIVER", b"20210901", b"1234", b"1", b"X", b"005010",
-    ]);
+    push_segment(
+        &mut buf,
+        e,
+        s,
+        b"GS",
+        &[
+            b"HP",
+            b"SENDER",
+            b"RECEIVER",
+            b"20210901",
+            b"1234",
+            b"1",
+            b"X",
+            b"005010",
+        ],
+    );
 
     // ST
     push_segment(&mut buf, e, s, b"ST", &[b"837", b"0001"]);
 
     // 10,000 body segments
     let body_count = 10_000usize;
-    let seg_ids = [b"CLM" as &[u8], b"NM1", b"DTP", b"SV1", b"REF", b"DMG", b"SBR", b"HI", b"LX", b"BHT"];
+    let seg_ids = [
+        b"CLM" as &[u8],
+        b"NM1",
+        b"DTP",
+        b"SV1",
+        b"REF",
+        b"DMG",
+        b"SBR",
+        b"HI",
+        b"LX",
+        b"BHT",
+    ];
     for _ in 0..body_count {
         let seg_id = *rng.choose(seg_ids.as_slice());
-        let body = random_segment_body(&mut rng, &DelimiterSet { element: e, sub_element: c, segment: s });
-        let body_refs: Vec<&[u8]> = body.iter().map(|v| v.as_slice()).collect();
+        let body = random_segment_body(
+            &mut rng,
+            &DelimiterSet {
+                element: e,
+                sub_element: c,
+                segment: s,
+            },
+        );
+        let body_refs: Vec<&[u8]> = body.iter().map(Vec::as_slice).collect();
         push_segment(&mut buf, e, s, seg_id, &body_refs);
     }
 
@@ -994,11 +1062,19 @@ fn vopr_massive_interchange() {
 
     // P5: segment count
     let seg_count_err = check_segment_count(&buf);
-    assert!(seg_count_err.is_none(), "P5 violated: {}", seg_count_err.unwrap_or_default());
+    assert!(
+        seg_count_err.is_none(),
+        "P5 violated: {}",
+        seg_count_err.unwrap_or_default()
+    );
 
     // P6: element preservation
     let pres_err = check_element_preservation(&buf);
-    assert!(pres_err.is_none(), "P6 violated: {}", pres_err.unwrap_or_default());
+    assert!(
+        pres_err.is_none(),
+        "P6 violated: {}",
+        pres_err.unwrap_or_default()
+    );
 
     // Parse and verify structure
     let interchanges = Interchange::parse(&buf).unwrap();
@@ -1011,8 +1087,7 @@ fn vopr_massive_interchange() {
     );
 
     println!(
-        "VOPR: massive-interchange: 1 interchange, 10000 segments, {} bytes, all properties hold",
-        input_len,
+        "VOPR: massive-interchange: 1 interchange, 10000 segments, {input_len} bytes, all properties hold",
     );
 }
 
@@ -1048,7 +1123,9 @@ fn vopr_empty_and_minimal() {
         // Random binary garbage
         ("random_garbage_256", {
             let mut rng = SplitMix64::new(99);
-            (0..256).map(|_| rng.range(0, 255) as u8).collect()
+            #[allow(clippy::cast_possible_truncation)]
+            let v: Vec<u8> = (0..256).map(|_| rng.range(0, 255) as u8).collect();
+            v
         }),
         // Repeated segment terminators
         ("repeated_tildes", b"~~~~~~~~~~~~~~~~~~~~".to_vec()),

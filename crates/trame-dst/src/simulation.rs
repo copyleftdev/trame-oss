@@ -405,7 +405,9 @@ impl Simulation {
             // Phase 8: Record metrics (tracked incrementally above)
 
             // Phase 9: Report progress
-            if self.config.report_interval > 0 && tick % self.config.report_interval == 0 && tick > 0
+            if self.config.report_interval > 0
+                && tick % self.config.report_interval == 0
+                && tick > 0
             {
                 self.last_progress_tick = tick;
             }

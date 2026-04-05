@@ -50,7 +50,7 @@ pub mod writer;
 pub use delimiters::Delimiters;
 pub use envelope::{Gs, Isa, St};
 pub use error::{ParseError, ParseErrorKind};
-pub use interchange::{parse_interchanges, FunctionalGroup, Interchange, TransactionSet};
+pub use interchange::{FunctionalGroup, Interchange, TransactionSet, parse_interchanges};
 pub use parser::Parser;
 pub use segment::{ElementIter, Segment, SubElementIter};
 pub use writer::Writer;

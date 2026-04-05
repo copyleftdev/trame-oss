@@ -1,5 +1,7 @@
 //! Criterion benchmarks for trame-wire.
 
+use std::fmt::Write;
+
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use trame_wire::{Delimiters, Interchange, Parser};
 
@@ -12,10 +14,8 @@ fn build_837p_interchange() -> Vec<u8> {
 
     // Generate 10 transaction sets, each with ~20 segments.
     for tx_num in 1..=10 {
-        buf.push_str(&format!("ST*837*{tx_num:04}*005010X222A1~"));
-        buf.push_str(&format!(
-            "BHT*0019*00*{tx_num:06}*20210901*1234*CH~"
-        ));
+        let _ = write!(buf, "ST*837*{tx_num:04}*005010X222A1~");
+        let _ = write!(buf, "BHT*0019*00*{tx_num:06}*20210901*1234*CH~");
 
         // Subscriber loop
         buf.push_str("HL*1**20*1~");
@@ -36,17 +36,18 @@ fn build_837p_interchange() -> Vec<u8> {
 
         // Service lines
         for line in 1..=3 {
-            buf.push_str(&format!(
+            let _ = write!(
+                buf,
                 "LX*{line}~\
                  SV1*HC:99213:25*50*UN*1***1~\
                  DTP*472*D8*20210901~"
-            ));
+            );
         }
 
         // Count: ST + BHT + HL + SBR + NM1 + N3 + N4 + DMG + NM1 + N3 + N4 + HL + CLM
         //        + 3*(LX + SV1 + DTP) + SE = 13 + 9 + 1 = 23
         let seg_count = 22; // ST through last DTP + SE
-        buf.push_str(&format!("SE*{seg_count}*{tx_num:04}~"));
+        let _ = write!(buf, "SE*{seg_count}*{tx_num:04}~");
     }
 
     buf.push_str("GE*10*1~");

@@ -174,7 +174,9 @@ mod tests {
     #[test]
     fn handles_crlf_between_segments() {
         let isa = "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *210901*1234*U*00401*000000001*0*P*:~";
-        let input = format!("{isa}\r\nGS*HP*S*R*20210901*1234*1*X*005010~\r\nGE*1*1~\r\nIEA*1*000000001~\r\n");
+        let input = format!(
+            "{isa}\r\nGS*HP*S*R*20210901*1234*1*X*005010~\r\nGE*1*1~\r\nIEA*1*000000001~\r\n"
+        );
         let parser = Parser::new(input.as_bytes()).unwrap();
         let segments: Vec<_> = parser.collect::<Result<Vec<_>, _>>().unwrap();
         assert_eq!(segments.len(), 4);

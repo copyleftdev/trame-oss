@@ -226,10 +226,7 @@ pub fn shrink(
         let mut lo: usize = 1;
         let mut hi = indices.len();
 
-        while lo < hi
-            && !timed_out(&start, config)
-            && !budget_exhausted(replay_attempts, config)
-        {
+        while lo < hi && !timed_out(&start, config) && !budget_exhausted(replay_attempts, config) {
             let mid = usize::midpoint(lo, hi);
             let prefix: Vec<usize> = indices[..mid].to_vec();
             replay_attempts += 1;

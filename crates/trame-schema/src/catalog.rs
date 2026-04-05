@@ -4,60 +4,94 @@
 //! and a [`Registry`] for looking them up by ID, version, or implementation
 //! guide reference.
 
-use crate::types::{
-    LoopDef, QualifierMatch, SegmentRef, TransactionSetDef, Usage,
-};
+use crate::types::{LoopDef, QualifierMatch, SegmentRef, TransactionSetDef, Usage};
 
 // ---------------------------------------------------------------------------
 // 997 — Functional Acknowledgment
 // ---------------------------------------------------------------------------
 
 static TS997_HEADER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "ST", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "AK1", usage: Usage::Required, max_use: 1, position: 20 },
+    SegmentRef {
+        segment_id: "ST",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "AK1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
 ];
 
 static TS997_AK3_CHILDREN: &[LoopDef] = &[];
 
 static TS997_AK3_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "AK3", usage: Usage::Situational, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "AK4", usage: Usage::Situational, max_use: 99, position: 20 },
-];
-
-static TS997_AK2_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "AK3",
-        name: "Data Segment Note",
+    SegmentRef {
+        segment_id: "AK3",
         usage: Usage::Situational,
-        repeat_count: 999_999,
-        trigger_segment: "AK3",
-        qualifier: None,
-        segments: TS997_AK3_SEGMENTS,
-        children: TS997_AK3_CHILDREN,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "AK4",
+        usage: Usage::Situational,
+        max_use: 99,
+        position: 20,
     },
 ];
+
+static TS997_AK2_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "AK3",
+    name: "Data Segment Note",
+    usage: Usage::Situational,
+    repeat_count: 999_999,
+    trigger_segment: "AK3",
+    qualifier: None,
+    segments: TS997_AK3_SEGMENTS,
+    children: TS997_AK3_CHILDREN,
+}];
 
 static TS997_AK2_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "AK2", usage: Usage::Situational, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "AK5", usage: Usage::Required, max_use: 1, position: 40 },
-];
-
-static TS997_DETAIL_LOOPS: &[LoopDef] = &[
-    LoopDef {
-        id: "AK2",
-        name: "Transaction Set Response Header",
+    SegmentRef {
+        segment_id: "AK2",
         usage: Usage::Situational,
-        repeat_count: 999_999,
-        trigger_segment: "AK2",
-        qualifier: None,
-        segments: TS997_AK2_SEGMENTS,
-        children: TS997_AK2_CHILDREN,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "AK5",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 40,
     },
 ];
 
+static TS997_DETAIL_LOOPS: &[LoopDef] = &[LoopDef {
+    id: "AK2",
+    name: "Transaction Set Response Header",
+    usage: Usage::Situational,
+    repeat_count: 999_999,
+    trigger_segment: "AK2",
+    qualifier: None,
+    segments: TS997_AK2_SEGMENTS,
+    children: TS997_AK2_CHILDREN,
+}];
+
 static TS997_TRAILER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "AK9", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "SE", usage: Usage::Required, max_use: 1, position: 20 },
+    SegmentRef {
+        segment_id: "AK9",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "SE",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
 ];
 
 static TS997: TransactionSetDef = TransactionSetDef {
@@ -78,75 +112,140 @@ static TS997: TransactionSetDef = TransactionSetDef {
 // ---------------------------------------------------------------------------
 
 static TS270_HEADER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "ST", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "BHT", usage: Usage::Required, max_use: 1, position: 20 },
+    SegmentRef {
+        segment_id: "ST",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "BHT",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
 ];
 
 // Loop 2100A — Information Source Name
-static TS270_2100A_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS270_2100A_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "NM1",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
 // Loop 2100B — Information Receiver Name
 static TS270_2100B_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 9, position: 20 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 9,
+        position: 20,
+    },
 ];
 
 // Loop 2110C — Eligibility/Benefit Inquiry
 static TS270_2110C_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "EQ", usage: Usage::Situational, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "DTP", usage: Usage::Situational, max_use: 2, position: 30 },
+    SegmentRef {
+        segment_id: "EQ",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "DTP",
+        usage: Usage::Situational,
+        max_use: 2,
+        position: 30,
+    },
 ];
 
 // Loop 2100C — Subscriber Name
 static TS270_2100C_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 9, position: 20 },
-    SegmentRef { segment_id: "DMG", usage: Usage::Situational, max_use: 1, position: 40 },
-    SegmentRef { segment_id: "DTP", usage: Usage::Situational, max_use: 1, position: 50 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 9,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "DMG",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "DTP",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 50,
+    },
 ];
 
 // Loop 2000A — Information Source
-static TS270_2000A_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "HL", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS270_2000A_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "HL",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
-static TS270_2000A_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "2100A",
-        name: "Information Source Name",
-        usage: Usage::Required,
-        repeat_count: 1,
-        trigger_segment: "NM1",
-        qualifier: None,
-        segments: TS270_2100A_SEGMENTS,
-        children: &[],
-    },
-];
+static TS270_2000A_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "2100A",
+    name: "Information Source Name",
+    usage: Usage::Required,
+    repeat_count: 1,
+    trigger_segment: "NM1",
+    qualifier: None,
+    segments: TS270_2100A_SEGMENTS,
+    children: &[],
+}];
 
 // Loop 2000B — Information Receiver
-static TS270_2000B_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "HL", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS270_2000B_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "HL",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
-static TS270_2000B_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "2100B",
-        name: "Information Receiver Name",
-        usage: Usage::Required,
-        repeat_count: 1,
-        trigger_segment: "NM1",
-        qualifier: None,
-        segments: TS270_2100B_SEGMENTS,
-        children: &[],
-    },
-];
+static TS270_2000B_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "2100B",
+    name: "Information Receiver Name",
+    usage: Usage::Required,
+    repeat_count: 1,
+    trigger_segment: "NM1",
+    qualifier: None,
+    segments: TS270_2100B_SEGMENTS,
+    children: &[],
+}];
 
 // Loop 2000C — Subscriber
 static TS270_2000C_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "HL", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "TRN", usage: Usage::Situational, max_use: 9, position: 20 },
+    SegmentRef {
+        segment_id: "HL",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "TRN",
+        usage: Usage::Situational,
+        max_use: 9,
+        position: 20,
+    },
 ];
 
 static TS270_2000C_CHILDREN: &[LoopDef] = &[
@@ -179,7 +278,10 @@ static TS270_DETAIL_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: u32::MAX,
         trigger_segment: "HL",
-        qualifier: Some(QualifierMatch { element_position: 3, values: &["20"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 3,
+            values: &["20"],
+        }),
         segments: TS270_2000A_SEGMENTS,
         children: TS270_2000A_CHILDREN,
     },
@@ -189,7 +291,10 @@ static TS270_DETAIL_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: u32::MAX,
         trigger_segment: "HL",
-        qualifier: Some(QualifierMatch { element_position: 3, values: &["21"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 3,
+            values: &["21"],
+        }),
         segments: TS270_2000B_SEGMENTS,
         children: TS270_2000B_CHILDREN,
     },
@@ -199,15 +304,21 @@ static TS270_DETAIL_LOOPS: &[LoopDef] = &[
         usage: Usage::Situational,
         repeat_count: u32::MAX,
         trigger_segment: "HL",
-        qualifier: Some(QualifierMatch { element_position: 3, values: &["22"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 3,
+            values: &["22"],
+        }),
         segments: TS270_2000C_SEGMENTS,
         children: TS270_2000C_CHILDREN,
     },
 ];
 
-static TS270_TRAILER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "SE", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS270_TRAILER_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "SE",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
 static TS270: TransactionSetDef = TransactionSetDef {
     id: "270",
@@ -227,20 +338,43 @@ static TS270: TransactionSetDef = TransactionSetDef {
 // ---------------------------------------------------------------------------
 
 static TS837P_HEADER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "ST", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "BHT", usage: Usage::Required, max_use: 1, position: 20 },
+    SegmentRef {
+        segment_id: "ST",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "BHT",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
 ];
 
 // Loop 1000A — Submitter Name
 static TS837P_1000A_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "PER", usage: Usage::Required, max_use: 2, position: 20 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "PER",
+        usage: Usage::Required,
+        max_use: 2,
+        position: 20,
+    },
 ];
 
 // Loop 1000B — Receiver Name
-static TS837P_1000B_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS837P_1000B_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "NM1",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
 static TS837P_HEADER_LOOPS: &[LoopDef] = &[
     LoopDef {
@@ -249,7 +383,10 @@ static TS837P_HEADER_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: 1,
         trigger_segment: "NM1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["41"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["41"],
+        }),
         segments: TS837P_1000A_SEGMENTS,
         children: &[],
     },
@@ -259,7 +396,10 @@ static TS837P_HEADER_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: 1,
         trigger_segment: "NM1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["40"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["40"],
+        }),
         segments: TS837P_1000B_SEGMENTS,
         children: &[],
     },
@@ -267,24 +407,74 @@ static TS837P_HEADER_LOOPS: &[LoopDef] = &[
 
 // Loop 2010AA — Billing Provider Name
 static TS837P_2010AA_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N3", usage: Usage::Required, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "N4", usage: Usage::Required, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 2, position: 40 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 2,
+        position: 40,
+    },
 ];
 
 // Loop 2010AB — Pay-To Address Name
 static TS837P_2010AB_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Situational, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N3", usage: Usage::Required, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "N4", usage: Usage::Required, max_use: 1, position: 30 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 30,
+    },
 ];
 
 // Loop 2000A — Billing Provider
 static TS837P_2000A_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "HL", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "PRV", usage: Usage::Situational, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "CUR", usage: Usage::Situational, max_use: 1, position: 30 },
+    SegmentRef {
+        segment_id: "HL",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "PRV",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "CUR",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 30,
+    },
 ];
 
 static TS837P_2000A_CHILDREN: &[LoopDef] = &[
@@ -294,7 +484,10 @@ static TS837P_2000A_CHILDREN: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: 1,
         trigger_segment: "NM1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["85"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["85"],
+        }),
         segments: TS837P_2010AA_SEGMENTS,
         children: &[],
     },
@@ -304,7 +497,10 @@ static TS837P_2000A_CHILDREN: &[LoopDef] = &[
         usage: Usage::Situational,
         repeat_count: 1,
         trigger_segment: "NM1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["87"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["87"],
+        }),
         segments: TS837P_2010AB_SEGMENTS,
         children: &[],
     },
@@ -312,24 +508,74 @@ static TS837P_2000A_CHILDREN: &[LoopDef] = &[
 
 // Loop 2010BA — Subscriber Name
 static TS837P_2010BA_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N3", usage: Usage::Situational, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "N4", usage: Usage::Situational, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "DMG", usage: Usage::Situational, max_use: 1, position: 40 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "DMG",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 40,
+    },
 ];
 
 // Loop 2010BB — Payer Name
 static TS837P_2010BB_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N3", usage: Usage::Situational, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "N4", usage: Usage::Situational, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 5, position: 40 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 5,
+        position: 40,
+    },
 ];
 
 // Loop 2000B — Subscriber
 static TS837P_2000B_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "HL", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "SBR", usage: Usage::Required, max_use: 1, position: 20 },
+    SegmentRef {
+        segment_id: "HL",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "SBR",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
 ];
 
 static TS837P_2000B_CHILDREN: &[LoopDef] = &[
@@ -339,7 +585,10 @@ static TS837P_2000B_CHILDREN: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: 1,
         trigger_segment: "NM1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["IL"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["IL"],
+        }),
         segments: TS837P_2010BA_SEGMENTS,
         children: &[],
     },
@@ -349,7 +598,10 @@ static TS837P_2000B_CHILDREN: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: 1,
         trigger_segment: "NM1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["PR"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["PR"],
+        }),
         segments: TS837P_2010BB_SEGMENTS,
         children: &[],
     },
@@ -357,60 +609,134 @@ static TS837P_2000B_CHILDREN: &[LoopDef] = &[
 
 // Loop 2010CA — Patient Name
 static TS837P_2010CA_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "NM1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N3", usage: Usage::Required, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "N4", usage: Usage::Required, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "DMG", usage: Usage::Required, max_use: 1, position: 40 },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "DMG",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 40,
+    },
 ];
 
 // Loop 2000C — Patient
 static TS837P_2000C_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "HL", usage: Usage::Situational, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "PAT", usage: Usage::Required, max_use: 1, position: 20 },
-];
-
-static TS837P_2000C_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "2010CA",
-        name: "Patient Name",
+    SegmentRef {
+        segment_id: "HL",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "PAT",
         usage: Usage::Required,
-        repeat_count: 1,
-        trigger_segment: "NM1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["QC"] }),
-        segments: TS837P_2010CA_SEGMENTS,
-        children: &[],
+        max_use: 1,
+        position: 20,
     },
 ];
 
+static TS837P_2000C_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "2010CA",
+    name: "Patient Name",
+    usage: Usage::Required,
+    repeat_count: 1,
+    trigger_segment: "NM1",
+    qualifier: Some(QualifierMatch {
+        element_position: 1,
+        values: &["QC"],
+    }),
+    segments: TS837P_2010CA_SEGMENTS,
+    children: &[],
+}];
+
 // Loop 2400 — Service Line
 static TS837P_2400_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "LX", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "SV1", usage: Usage::Required, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "DTP", usage: Usage::Required, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 5, position: 40 },
+    SegmentRef {
+        segment_id: "LX",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "SV1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "DTP",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 5,
+        position: 40,
+    },
 ];
 
 // Loop 2300 — Claim Information
 static TS837P_2300_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "CLM", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "DTP", usage: Usage::Situational, max_use: 4, position: 20 },
-    SegmentRef { segment_id: "AMT", usage: Usage::Situational, max_use: 2, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 14, position: 40 },
-    SegmentRef { segment_id: "HI", usage: Usage::Required, max_use: 1, position: 80 },
-];
-
-static TS837P_2300_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "2400",
-        name: "Service Line",
+    SegmentRef {
+        segment_id: "CLM",
         usage: Usage::Required,
-        repeat_count: 50,
-        trigger_segment: "LX",
-        qualifier: None,
-        segments: TS837P_2400_SEGMENTS,
-        children: &[],
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "DTP",
+        usage: Usage::Situational,
+        max_use: 4,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "AMT",
+        usage: Usage::Situational,
+        max_use: 2,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 14,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "HI",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 80,
     },
 ];
+
+static TS837P_2300_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "2400",
+    name: "Service Line",
+    usage: Usage::Required,
+    repeat_count: 50,
+    trigger_segment: "LX",
+    qualifier: None,
+    segments: TS837P_2400_SEGMENTS,
+    children: &[],
+}];
 
 static TS837P_DETAIL_LOOPS: &[LoopDef] = &[
     LoopDef {
@@ -419,7 +745,10 @@ static TS837P_DETAIL_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: u32::MAX,
         trigger_segment: "HL",
-        qualifier: Some(QualifierMatch { element_position: 3, values: &["20"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 3,
+            values: &["20"],
+        }),
         segments: TS837P_2000A_SEGMENTS,
         children: TS837P_2000A_CHILDREN,
     },
@@ -429,7 +758,10 @@ static TS837P_DETAIL_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: u32::MAX,
         trigger_segment: "HL",
-        qualifier: Some(QualifierMatch { element_position: 3, values: &["22"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 3,
+            values: &["22"],
+        }),
         segments: TS837P_2000B_SEGMENTS,
         children: TS837P_2000B_CHILDREN,
     },
@@ -439,7 +771,10 @@ static TS837P_DETAIL_LOOPS: &[LoopDef] = &[
         usage: Usage::Situational,
         repeat_count: u32::MAX,
         trigger_segment: "HL",
-        qualifier: Some(QualifierMatch { element_position: 3, values: &["23"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 3,
+            values: &["23"],
+        }),
         segments: TS837P_2000C_SEGMENTS,
         children: TS837P_2000C_CHILDREN,
     },
@@ -455,9 +790,12 @@ static TS837P_DETAIL_LOOPS: &[LoopDef] = &[
     },
 ];
 
-static TS837P_TRAILER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "SE", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS837P_TRAILER_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "SE",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
 static TS837P: TransactionSetDef = TransactionSetDef {
     id: "837",
@@ -477,26 +815,86 @@ static TS837P: TransactionSetDef = TransactionSetDef {
 // ---------------------------------------------------------------------------
 
 static TS835_HEADER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "ST", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "BPR", usage: Usage::Required, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "TRN", usage: Usage::Required, max_use: 1, position: 30 },
+    SegmentRef {
+        segment_id: "ST",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "BPR",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "TRN",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 30,
+    },
 ];
 
 // Loop 1000A — Payer Identification
 static TS835_1000A_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "N1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N3", usage: Usage::Required, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "N4", usage: Usage::Required, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 4, position: 40 },
-    SegmentRef { segment_id: "PER", usage: Usage::Situational, max_use: 3, position: 50 },
+    SegmentRef {
+        segment_id: "N1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 4,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "PER",
+        usage: Usage::Situational,
+        max_use: 3,
+        position: 50,
+    },
 ];
 
 // Loop 1000B — Payee Identification
 static TS835_1000B_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "N1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N3", usage: Usage::Situational, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "N4", usage: Usage::Situational, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 4, position: 40 },
+    SegmentRef {
+        segment_id: "N1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 4,
+        position: 40,
+    },
 ];
 
 static TS835_HEADER_LOOPS: &[LoopDef] = &[
@@ -506,7 +904,10 @@ static TS835_HEADER_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: 1,
         trigger_segment: "N1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["PR"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["PR"],
+        }),
         segments: TS835_1000A_SEGMENTS,
         children: &[],
     },
@@ -516,7 +917,10 @@ static TS835_HEADER_LOOPS: &[LoopDef] = &[
         usage: Usage::Required,
         repeat_count: 1,
         trigger_segment: "N1",
-        qualifier: Some(QualifierMatch { element_position: 1, values: &["PE"] }),
+        qualifier: Some(QualifierMatch {
+            element_position: 1,
+            values: &["PE"],
+        }),
         segments: TS835_1000B_SEGMENTS,
         children: &[],
     },
@@ -524,78 +928,175 @@ static TS835_HEADER_LOOPS: &[LoopDef] = &[
 
 // Loop 2110 — Service Payment Information
 static TS835_2110_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "SVC", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "DTM", usage: Usage::Situational, max_use: 3, position: 20 },
-    SegmentRef { segment_id: "CAS", usage: Usage::Situational, max_use: 99, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 24, position: 40 },
-    SegmentRef { segment_id: "AMT", usage: Usage::Situational, max_use: 12, position: 50 },
-    SegmentRef { segment_id: "QTY", usage: Usage::Situational, max_use: 6, position: 60 },
-    SegmentRef { segment_id: "LQ", usage: Usage::Situational, max_use: 99, position: 70 },
+    SegmentRef {
+        segment_id: "SVC",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "DTM",
+        usage: Usage::Situational,
+        max_use: 3,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "CAS",
+        usage: Usage::Situational,
+        max_use: 99,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 24,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "AMT",
+        usage: Usage::Situational,
+        max_use: 12,
+        position: 50,
+    },
+    SegmentRef {
+        segment_id: "QTY",
+        usage: Usage::Situational,
+        max_use: 6,
+        position: 60,
+    },
+    SegmentRef {
+        segment_id: "LQ",
+        usage: Usage::Situational,
+        max_use: 99,
+        position: 70,
+    },
 ];
 
 // Loop 2100 — Claim Payment Information
 static TS835_2100_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "CLP", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "CAS", usage: Usage::Situational, max_use: 99, position: 20 },
-    SegmentRef { segment_id: "NM1", usage: Usage::Situational, max_use: 9, position: 30 },
-    SegmentRef { segment_id: "MIA", usage: Usage::Situational, max_use: 1, position: 40 },
-    SegmentRef { segment_id: "MOA", usage: Usage::Situational, max_use: 1, position: 50 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 14, position: 60 },
-    SegmentRef { segment_id: "DTM", usage: Usage::Situational, max_use: 4, position: 70 },
-    SegmentRef { segment_id: "PER", usage: Usage::Situational, max_use: 3, position: 80 },
-    SegmentRef { segment_id: "AMT", usage: Usage::Situational, max_use: 14, position: 90 },
-    SegmentRef { segment_id: "QTY", usage: Usage::Situational, max_use: 14, position: 100 },
-];
-
-static TS835_2100_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "2110",
-        name: "Service Payment Information",
+    SegmentRef {
+        segment_id: "CLP",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "CAS",
         usage: Usage::Situational,
-        repeat_count: 999,
-        trigger_segment: "SVC",
-        qualifier: None,
-        segments: TS835_2110_SEGMENTS,
-        children: &[],
+        max_use: 99,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "NM1",
+        usage: Usage::Situational,
+        max_use: 9,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "MIA",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "MOA",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 50,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 14,
+        position: 60,
+    },
+    SegmentRef {
+        segment_id: "DTM",
+        usage: Usage::Situational,
+        max_use: 4,
+        position: 70,
+    },
+    SegmentRef {
+        segment_id: "PER",
+        usage: Usage::Situational,
+        max_use: 3,
+        position: 80,
+    },
+    SegmentRef {
+        segment_id: "AMT",
+        usage: Usage::Situational,
+        max_use: 14,
+        position: 90,
+    },
+    SegmentRef {
+        segment_id: "QTY",
+        usage: Usage::Situational,
+        max_use: 14,
+        position: 100,
     },
 ];
+
+static TS835_2100_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "2110",
+    name: "Service Payment Information",
+    usage: Usage::Situational,
+    repeat_count: 999,
+    trigger_segment: "SVC",
+    qualifier: None,
+    segments: TS835_2110_SEGMENTS,
+    children: &[],
+}];
 
 // Loop 2000 — Header Number
 static TS835_2000_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "LX", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "TS3", usage: Usage::Situational, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "TS2", usage: Usage::Situational, max_use: 1, position: 30 },
-];
-
-static TS835_2000_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "2100",
-        name: "Claim Payment Information",
+    SegmentRef {
+        segment_id: "LX",
         usage: Usage::Required,
-        repeat_count: u32::MAX,
-        trigger_segment: "CLP",
-        qualifier: None,
-        segments: TS835_2100_SEGMENTS,
-        children: TS835_2100_CHILDREN,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "TS3",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "TS2",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 30,
     },
 ];
 
-static TS835_DETAIL_LOOPS: &[LoopDef] = &[
-    LoopDef {
-        id: "2000",
-        name: "Header Number",
-        usage: Usage::Required,
-        repeat_count: u32::MAX,
-        trigger_segment: "LX",
-        qualifier: None,
-        segments: TS835_2000_SEGMENTS,
-        children: TS835_2000_CHILDREN,
-    },
-];
+static TS835_2000_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "2100",
+    name: "Claim Payment Information",
+    usage: Usage::Required,
+    repeat_count: u32::MAX,
+    trigger_segment: "CLP",
+    qualifier: None,
+    segments: TS835_2100_SEGMENTS,
+    children: TS835_2100_CHILDREN,
+}];
 
-static TS835_TRAILER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "SE", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS835_DETAIL_LOOPS: &[LoopDef] = &[LoopDef {
+    id: "2000",
+    name: "Header Number",
+    usage: Usage::Required,
+    repeat_count: u32::MAX,
+    trigger_segment: "LX",
+    qualifier: None,
+    segments: TS835_2000_SEGMENTS,
+    children: TS835_2000_CHILDREN,
+}];
+
+static TS835_TRAILER_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "SE",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
 static TS835: TransactionSetDef = TransactionSetDef {
     id: "835",
@@ -615,100 +1116,198 @@ static TS835: TransactionSetDef = TransactionSetDef {
 // ---------------------------------------------------------------------------
 
 static TS850_HEADER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "ST", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "BEG", usage: Usage::Required, max_use: 1, position: 20 },
-    SegmentRef { segment_id: "CUR", usage: Usage::Situational, max_use: 1, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 12, position: 40 },
-    SegmentRef { segment_id: "PER", usage: Usage::Situational, max_use: 3, position: 50 },
-    SegmentRef { segment_id: "DTM", usage: Usage::Situational, max_use: 10, position: 60 },
+    SegmentRef {
+        segment_id: "ST",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "BEG",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "CUR",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 12,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "PER",
+        usage: Usage::Situational,
+        max_use: 3,
+        position: 50,
+    },
+    SegmentRef {
+        segment_id: "DTM",
+        usage: Usage::Situational,
+        max_use: 10,
+        position: 60,
+    },
 ];
 
 // Loop N1 (header-level) — Party Identification
 static TS850_N1_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "N1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "N2", usage: Usage::Situational, max_use: 2, position: 20 },
-    SegmentRef { segment_id: "N3", usage: Usage::Situational, max_use: 2, position: 30 },
-    SegmentRef { segment_id: "N4", usage: Usage::Situational, max_use: 1, position: 40 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 12, position: 50 },
-    SegmentRef { segment_id: "PER", usage: Usage::Situational, max_use: 3, position: 60 },
+    SegmentRef {
+        segment_id: "N1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "N2",
+        usage: Usage::Situational,
+        max_use: 2,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "N3",
+        usage: Usage::Situational,
+        max_use: 2,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "N4",
+        usage: Usage::Situational,
+        max_use: 1,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 12,
+        position: 50,
+    },
+    SegmentRef {
+        segment_id: "PER",
+        usage: Usage::Situational,
+        max_use: 3,
+        position: 60,
+    },
 ];
 
 // Line-level N1 loop inside PO1
-static TS850_PO1_N1_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "N1", usage: Usage::Situational, max_use: 1, position: 10 },
-];
+static TS850_PO1_N1_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "N1",
+    usage: Usage::Situational,
+    max_use: 1,
+    position: 10,
+}];
 
 // Loop PO1 — Line Item
 static TS850_PO1_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "PO1", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "PID", usage: Usage::Situational, max_use: 1000, position: 20 },
-    SegmentRef { segment_id: "MEA", usage: Usage::Situational, max_use: 40, position: 30 },
-    SegmentRef { segment_id: "REF", usage: Usage::Situational, max_use: 12, position: 40 },
-    SegmentRef { segment_id: "DTM", usage: Usage::Situational, max_use: 10, position: 50 },
-    SegmentRef { segment_id: "SAC", usage: Usage::Situational, max_use: 25, position: 60 },
-];
-
-static TS850_PO1_CHILDREN: &[LoopDef] = &[
-    LoopDef {
-        id: "N1",
-        name: "Line-Level Party Identification",
+    SegmentRef {
+        segment_id: "PO1",
+        usage: Usage::Required,
+        max_use: 1,
+        position: 10,
+    },
+    SegmentRef {
+        segment_id: "PID",
         usage: Usage::Situational,
-        repeat_count: 200,
-        trigger_segment: "N1",
-        qualifier: None,
-        segments: TS850_PO1_N1_SEGMENTS,
-        children: &[],
+        max_use: 1000,
+        position: 20,
+    },
+    SegmentRef {
+        segment_id: "MEA",
+        usage: Usage::Situational,
+        max_use: 40,
+        position: 30,
+    },
+    SegmentRef {
+        segment_id: "REF",
+        usage: Usage::Situational,
+        max_use: 12,
+        position: 40,
+    },
+    SegmentRef {
+        segment_id: "DTM",
+        usage: Usage::Situational,
+        max_use: 10,
+        position: 50,
+    },
+    SegmentRef {
+        segment_id: "SAC",
+        usage: Usage::Situational,
+        max_use: 25,
+        position: 60,
     },
 ];
+
+static TS850_PO1_CHILDREN: &[LoopDef] = &[LoopDef {
+    id: "N1",
+    name: "Line-Level Party Identification",
+    usage: Usage::Situational,
+    repeat_count: 200,
+    trigger_segment: "N1",
+    qualifier: None,
+    segments: TS850_PO1_N1_SEGMENTS,
+    children: &[],
+}];
 
 // Loop CTT — Transaction Totals
 static TS850_CTT_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "CTT", usage: Usage::Required, max_use: 1, position: 10 },
-    SegmentRef { segment_id: "AMT", usage: Usage::Situational, max_use: 1, position: 20 },
-];
-
-static TS850_HEADER_LOOPS: &[LoopDef] = &[
-    LoopDef {
-        id: "N1",
-        name: "Party Identification",
-        usage: Usage::Situational,
-        repeat_count: 200,
-        trigger_segment: "N1",
-        qualifier: None,
-        segments: TS850_N1_SEGMENTS,
-        children: &[],
-    },
-];
-
-static TS850_DETAIL_LOOPS: &[LoopDef] = &[
-    LoopDef {
-        id: "PO1",
-        name: "Line Item",
+    SegmentRef {
+        segment_id: "CTT",
         usage: Usage::Required,
-        repeat_count: 100_000,
-        trigger_segment: "PO1",
-        qualifier: None,
-        segments: TS850_PO1_SEGMENTS,
-        children: TS850_PO1_CHILDREN,
+        max_use: 1,
+        position: 10,
     },
-];
-
-static TS850_SUMMARY_LOOPS: &[LoopDef] = &[
-    LoopDef {
-        id: "CTT",
-        name: "Transaction Totals",
+    SegmentRef {
+        segment_id: "AMT",
         usage: Usage::Situational,
-        repeat_count: 1,
-        trigger_segment: "CTT",
-        qualifier: None,
-        segments: TS850_CTT_SEGMENTS,
-        children: &[],
+        max_use: 1,
+        position: 20,
     },
 ];
 
-static TS850_TRAILER_SEGMENTS: &[SegmentRef] = &[
-    SegmentRef { segment_id: "SE", usage: Usage::Required, max_use: 1, position: 10 },
-];
+static TS850_HEADER_LOOPS: &[LoopDef] = &[LoopDef {
+    id: "N1",
+    name: "Party Identification",
+    usage: Usage::Situational,
+    repeat_count: 200,
+    trigger_segment: "N1",
+    qualifier: None,
+    segments: TS850_N1_SEGMENTS,
+    children: &[],
+}];
+
+static TS850_DETAIL_LOOPS: &[LoopDef] = &[LoopDef {
+    id: "PO1",
+    name: "Line Item",
+    usage: Usage::Required,
+    repeat_count: 100_000,
+    trigger_segment: "PO1",
+    qualifier: None,
+    segments: TS850_PO1_SEGMENTS,
+    children: TS850_PO1_CHILDREN,
+}];
+
+static TS850_SUMMARY_LOOPS: &[LoopDef] = &[LoopDef {
+    id: "CTT",
+    name: "Transaction Totals",
+    usage: Usage::Situational,
+    repeat_count: 1,
+    trigger_segment: "CTT",
+    qualifier: None,
+    segments: TS850_CTT_SEGMENTS,
+    children: &[],
+}];
+
+static TS850_TRAILER_SEGMENTS: &[SegmentRef] = &[SegmentRef {
+    segment_id: "SE",
+    usage: Usage::Required,
+    max_use: 1,
+    position: 10,
+}];
 
 static TS850: TransactionSetDef = TransactionSetDef {
     id: "850",
@@ -795,7 +1394,9 @@ mod tests {
     #[test]
     fn registry_lookup_997() {
         let reg = Registry::new();
-        let ts = reg.lookup("997", "005010").expect("997 should be registered");
+        let ts = reg
+            .lookup("997", "005010")
+            .expect("997 should be registered");
         assert_eq!(ts.id, "997");
         assert_eq!(ts.name, "Functional Acknowledgment");
         assert_eq!(ts.functional_group_id, "FA");
@@ -804,7 +1405,9 @@ mod tests {
     #[test]
     fn registry_lookup_270() {
         let reg = Registry::new();
-        let ts = reg.lookup("270", "005010").expect("270 should be registered");
+        let ts = reg
+            .lookup("270", "005010")
+            .expect("270 should be registered");
         assert_eq!(ts.id, "270");
         assert_eq!(ts.implementation_ref, Some("005010X279A1"));
     }
@@ -812,7 +1415,9 @@ mod tests {
     #[test]
     fn registry_lookup_837p() {
         let reg = Registry::new();
-        let ts = reg.lookup("837", "005010").expect("837 should be registered");
+        let ts = reg
+            .lookup("837", "005010")
+            .expect("837 should be registered");
         assert_eq!(ts.id, "837");
         assert_eq!(ts.implementation_ref, Some("005010X222A1"));
     }
@@ -884,18 +1489,27 @@ mod tests {
 
         let loop_a = &ts.detail_loops[0];
         assert_eq!(loop_a.id, "2000A");
-        let qa = loop_a.qualifier.as_ref().expect("2000A should have qualifier");
+        let qa = loop_a
+            .qualifier
+            .as_ref()
+            .expect("2000A should have qualifier");
         assert_eq!(qa.element_position, 3);
         assert_eq!(qa.values, &["20"]);
 
         let loop_b = &ts.detail_loops[1];
         assert_eq!(loop_b.id, "2000B");
-        let qb = loop_b.qualifier.as_ref().expect("2000B should have qualifier");
+        let qb = loop_b
+            .qualifier
+            .as_ref()
+            .expect("2000B should have qualifier");
         assert_eq!(qb.values, &["21"]);
 
         let loop_c = &ts.detail_loops[2];
         assert_eq!(loop_c.id, "2000C");
-        let qc = loop_c.qualifier.as_ref().expect("2000C should have qualifier");
+        let qc = loop_c
+            .qualifier
+            .as_ref()
+            .expect("2000C should have qualifier");
         assert_eq!(qc.values, &["22"]);
     }
 
@@ -940,7 +1554,9 @@ mod tests {
     #[test]
     fn registry_lookup_850_by_id_version() {
         let reg = Registry::new();
-        let ts = reg.lookup("850", "004010").expect("850 should be registered");
+        let ts = reg
+            .lookup("850", "004010")
+            .expect("850 should be registered");
         assert_eq!(ts.id, "850");
         assert_eq!(ts.name, "Purchase Order");
         assert_eq!(ts.functional_group_id, "PO");

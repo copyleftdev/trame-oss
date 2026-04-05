@@ -54,7 +54,10 @@ impl<'a> Isa<'a> {
             return Err(ParseError::new(
                 ParseErrorKind::InvalidEnvelope,
                 0,
-                format!("expected ISA segment, got {:?}", segment.id_str().unwrap_or("<non-utf8>")),
+                format!(
+                    "expected ISA segment, got {:?}",
+                    segment.id_str().unwrap_or("<non-utf8>")
+                ),
             ));
         }
 
@@ -121,7 +124,10 @@ impl<'a> Gs<'a> {
             return Err(ParseError::new(
                 ParseErrorKind::InvalidEnvelope,
                 0,
-                format!("expected GS segment, got {:?}", segment.id_str().unwrap_or("<non-utf8>")),
+                format!(
+                    "expected GS segment, got {:?}",
+                    segment.id_str().unwrap_or("<non-utf8>")
+                ),
             ));
         }
 
@@ -169,7 +175,10 @@ impl<'a> St<'a> {
             return Err(ParseError::new(
                 ParseErrorKind::InvalidEnvelope,
                 0,
-                format!("expected ST segment, got {:?}", segment.id_str().unwrap_or("<non-utf8>")),
+                format!(
+                    "expected ST segment, got {:?}",
+                    segment.id_str().unwrap_or("<non-utf8>")
+                ),
             ));
         }
 
@@ -182,13 +191,9 @@ impl<'a> St<'a> {
             ));
         }
 
-        let impl_ref = segment.element(3).and_then(|e| {
-            if e.is_empty() {
-                None
-            } else {
-                Some(e)
-            }
-        });
+        let impl_ref = segment
+            .element(3)
+            .and_then(|e| if e.is_empty() { None } else { Some(e) });
 
         Ok(Self {
             transaction_set_id: segment.element(1).unwrap_or_default(),

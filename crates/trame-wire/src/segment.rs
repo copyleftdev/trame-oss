@@ -208,7 +208,10 @@ mod tests {
     fn sub_elements() {
         let seg = test_segment(b"SV1*HC:99213:25*100*UN*1");
         let subs: Vec<&[u8]> = seg.sub_elements(1).unwrap().collect();
-        assert_eq!(subs, vec![b"HC".as_ref(), b"99213".as_ref(), b"25".as_ref()]);
+        assert_eq!(
+            subs,
+            vec![b"HC".as_ref(), b"99213".as_ref(), b"25".as_ref()]
+        );
     }
 
     #[test]
@@ -236,10 +239,7 @@ mod tests {
     fn iterate_elements() {
         let seg = test_segment(b"GE*1*1234");
         let elems: Vec<&[u8]> = seg.elements().collect();
-        assert_eq!(
-            elems,
-            vec![b"GE".as_ref(), b"1".as_ref(), b"1234".as_ref()]
-        );
+        assert_eq!(elems, vec![b"GE".as_ref(), b"1".as_ref(), b"1234".as_ref()]);
     }
 
     #[test]
@@ -249,12 +249,7 @@ mod tests {
         let elems: Vec<&[u8]> = seg.elements().collect();
         assert_eq!(
             elems,
-            vec![
-                b"AAA".as_ref(),
-                b"".as_ref(),
-                b"".as_ref(),
-                b"".as_ref(),
-            ]
+            vec![b"AAA".as_ref(), b"".as_ref(), b"".as_ref(), b"".as_ref(),]
         );
     }
 }

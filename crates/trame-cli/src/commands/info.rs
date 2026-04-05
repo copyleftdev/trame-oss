@@ -57,15 +57,29 @@ pub fn run(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
     }
 
     for ic in &interchanges {
-        let control = std::str::from_utf8(ic.isa.control_number).unwrap_or("???").trim();
-        let sender_q = std::str::from_utf8(ic.isa.sender_qualifier).unwrap_or("??").trim();
-        let sender_id = std::str::from_utf8(ic.isa.sender_id).unwrap_or("???").trim();
-        let receiver_q = std::str::from_utf8(ic.isa.receiver_qualifier).unwrap_or("??").trim();
-        let receiver_id = std::str::from_utf8(ic.isa.receiver_id).unwrap_or("???").trim();
+        let control = std::str::from_utf8(ic.isa.control_number)
+            .unwrap_or("???")
+            .trim();
+        let sender_q = std::str::from_utf8(ic.isa.sender_qualifier)
+            .unwrap_or("??")
+            .trim();
+        let sender_id = std::str::from_utf8(ic.isa.sender_id)
+            .unwrap_or("???")
+            .trim();
+        let receiver_q = std::str::from_utf8(ic.isa.receiver_qualifier)
+            .unwrap_or("??")
+            .trim();
+        let receiver_id = std::str::from_utf8(ic.isa.receiver_id)
+            .unwrap_or("???")
+            .trim();
         let date = std::str::from_utf8(ic.isa.date).unwrap_or("??????");
         let time = std::str::from_utf8(ic.isa.time).unwrap_or("????");
-        let version = std::str::from_utf8(ic.isa.version).unwrap_or("?????").trim();
-        let usage = std::str::from_utf8(ic.isa.usage_indicator).unwrap_or("?").trim();
+        let version = std::str::from_utf8(ic.isa.version)
+            .unwrap_or("?????")
+            .trim();
+        let usage = std::str::from_utf8(ic.isa.usage_indicator)
+            .unwrap_or("?")
+            .trim();
 
         println!("Interchange: {control}");
         println!("  Sender:   {sender_q}/{sender_id}");
@@ -78,7 +92,9 @@ pub fn run(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
         for (gi, grp) in ic.groups.iter().enumerate() {
             let func_id = std::str::from_utf8(grp.gs.functional_id).unwrap_or("??");
             let gs_version = std::str::from_utf8(grp.gs.version).unwrap_or("???");
-            let gs_control = std::str::from_utf8(grp.gs.control_number).unwrap_or("?").trim();
+            let gs_control = std::str::from_utf8(grp.gs.control_number)
+                .unwrap_or("?")
+                .trim();
 
             println!(
                 "    Group {}: {} ({}) v{}",

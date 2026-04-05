@@ -232,10 +232,7 @@ mod tests {
         let txn = &grp.transaction_sets[0];
         assert_eq!(txn.st.transaction_set_id, b"837");
         assert_eq!(txn.st.control_number, b"0001");
-        assert_eq!(
-            txn.st.implementation_ref,
-            Some(b"005010X222A1".as_ref())
-        );
+        assert_eq!(txn.st.implementation_ref, Some(b"005010X222A1".as_ref()));
         assert_eq!(txn.segments.len(), 2); // BHT + CLM
         assert_eq!(txn.segments[0].id_str().unwrap(), "BHT");
         assert_eq!(txn.segments[1].id_str().unwrap(), "CLM");
@@ -262,11 +259,15 @@ mod tests {
         assert_eq!(interchanges.len(), 1);
         assert_eq!(interchanges[0].groups[0].transaction_sets.len(), 2);
         assert_eq!(
-            interchanges[0].groups[0].transaction_sets[0].st.control_number,
+            interchanges[0].groups[0].transaction_sets[0]
+                .st
+                .control_number,
             b"0001"
         );
         assert_eq!(
-            interchanges[0].groups[0].transaction_sets[1].st.control_number,
+            interchanges[0].groups[0].transaction_sets[1]
+                .st
+                .control_number,
             b"0002"
         );
     }
@@ -394,6 +395,9 @@ mod tests {
         );
         let interchanges = Interchange::parse(input.as_bytes()).unwrap();
         assert_eq!(interchanges.len(), 1);
-        assert_eq!(interchanges[0].groups[0].transaction_sets[0].segments.len(), 1);
+        assert_eq!(
+            interchanges[0].groups[0].transaction_sets[0].segments.len(),
+            1
+        );
     }
 }

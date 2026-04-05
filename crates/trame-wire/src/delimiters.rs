@@ -130,7 +130,10 @@ fn validate_delimiter(b: u8, offset: usize, name: &str) -> Result<(), ParseError
         return Err(ParseError::new(
             ParseErrorKind::InvalidDelimiter,
             offset,
-            format!("{name} cannot be alphanumeric: found {b:#04x} ({:?})", b as char),
+            format!(
+                "{name} cannot be alphanumeric: found {b:#04x} ({:?})",
+                b as char
+            ),
         ));
     }
     Ok(())

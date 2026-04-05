@@ -254,13 +254,7 @@ impl CoverageTracker {
             return Vec::new();
         }
 
-        let max_hits = self
-            .hit_counts
-            .values()
-            .copied()
-            .max()
-            .unwrap_or(1)
-            .max(1);
+        let max_hits = self.hit_counts.values().copied().max().unwrap_or(1).max(1);
 
         let mut adjustments = Vec::new();
 
@@ -380,7 +374,11 @@ mod tests {
         tracker.register(variant_id.clone(), "fault");
 
         tracker.record_fault(FaultType::StorageWriteFailure);
-        assert!(tracker.exercised_faults().contains(&FaultType::StorageWriteFailure));
+        assert!(
+            tracker
+                .exercised_faults()
+                .contains(&FaultType::StorageWriteFailure)
+        );
         assert_eq!(tracker.hit_count(&variant_id), 1);
     }
 

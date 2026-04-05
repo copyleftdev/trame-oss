@@ -26,9 +26,7 @@ pub enum WalkEvent<'a> {
         expected: Vec<&'static str>,
     },
     /// Exited a loop.
-    LoopEnd {
-        loop_id: &'static str,
-    },
+    LoopEnd { loop_id: &'static str },
 }
 
 /// Phase of the transaction set we are currently processing.
@@ -105,11 +103,7 @@ impl SchemaWalker {
     /// - `qualifier`: optional qualifier element value for disambiguating
     ///   loops that share the same trigger segment. For `HL` segments this
     ///   is typically element 03 (the hierarchical level code).
-    pub fn feed<'a>(
-        &mut self,
-        segment_id: &'a [u8],
-        qualifier: Option<&[u8]>,
-    ) -> WalkEvent<'a> {
+    pub fn feed<'a>(&mut self, segment_id: &'a [u8], qualifier: Option<&[u8]>) -> WalkEvent<'a> {
         let seg_str = std::str::from_utf8(segment_id).unwrap_or("");
 
         match self.phase {
@@ -267,12 +261,7 @@ impl SchemaWalker {
         let loop_def = state.loop_def;
 
         // Check for a segment match in the current loop's remaining segments.
-        for (i, seg_ref) in loop_def
-            .segments
-            .iter()
-            .enumerate()
-            .skip(state.segment_idx)
-        {
+        for (i, seg_ref) in loop_def.segments.iter().enumerate().skip(state.segment_idx) {
             if seg_ref.segment_id == seg_str {
                 let state = self.loop_stack.last_mut().unwrap();
                 state.segment_idx = i + 1;
@@ -286,12 +275,7 @@ impl SchemaWalker {
 
         // Check child loops.
         let child_start = state.child_idx;
-        for (i, child) in loop_def
-            .children
-            .iter()
-            .enumerate()
-            .skip(child_start)
-        {
+        for (i, child) in loop_def.children.iter().enumerate().skip(child_start) {
             if child.trigger_segment == seg_str
                 && qualifier_matches(child.qualifier.as_ref(), qualifier)
             {
@@ -451,14 +435,20 @@ mod tests {
         let ev = walker.feed(b"AK2", None);
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "AK2", iteration: 1 }
+            WalkEvent::LoopStart {
+                loop_id: "AK2",
+                iteration: 1
+            }
         ));
 
         // AK5 -- segment inside AK2 loop
         let ev = walker.feed(b"AK5", None);
         assert!(matches!(
             ev,
-            WalkEvent::SegmentMatch { loop_id: Some("AK2"), .. }
+            WalkEvent::SegmentMatch {
+                loop_id: Some("AK2"),
+                ..
+            }
         ));
 
         // AK9 -- trailer segment (closes AK2 loop)
@@ -492,14 +482,20 @@ mod tests {
         let ev = walker.feed(b"AK4", None);
         assert!(matches!(
             ev,
-            WalkEvent::SegmentMatch { loop_id: Some("AK3"), .. }
+            WalkEvent::SegmentMatch {
+                loop_id: Some("AK3"),
+                ..
+            }
         ));
 
         // AK5 -- back in AK2 loop (AK3 loop closes)
         let ev = walker.feed(b"AK5", None);
         assert!(matches!(
             ev,
-            WalkEvent::SegmentMatch { loop_id: Some("AK2"), .. }
+            WalkEvent::SegmentMatch {
+                loop_id: Some("AK2"),
+                ..
+            }
         ));
 
         walker.feed(b"AK9", None);
@@ -519,7 +515,10 @@ mod tests {
         let ev = walker.feed(b"AK2", None);
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "AK2", iteration: 1 }
+            WalkEvent::LoopStart {
+                loop_id: "AK2",
+                iteration: 1
+            }
         ));
         walker.feed(b"AK5", None);
 
@@ -527,7 +526,10 @@ mod tests {
         let ev = walker.feed(b"AK2", None);
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "AK2", iteration: 2 }
+            WalkEvent::LoopStart {
+                loop_id: "AK2",
+                iteration: 2
+            }
         ));
         walker.feed(b"AK5", None);
 
@@ -549,63 +551,90 @@ mod tests {
         let ev = walker.feed(b"HL", Some(b"20"));
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2000A", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2000A",
+                ..
+            }
         ));
 
         // 2100A -- NM1 inside 2000A
         let ev = walker.feed(b"NM1", None);
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2100A", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2100A",
+                ..
+            }
         ));
 
         // 2000B -- HL with qualifier "21"
         let ev = walker.feed(b"HL", Some(b"21"));
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2000B", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2000B",
+                ..
+            }
         ));
 
         // 2100B -- NM1 inside 2000B
         let ev = walker.feed(b"NM1", None);
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2100B", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2100B",
+                ..
+            }
         ));
 
         // 2000C -- HL with qualifier "22"
         let ev = walker.feed(b"HL", Some(b"22"));
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2000C", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2000C",
+                ..
+            }
         ));
 
         // TRN in 2000C
         let ev = walker.feed(b"TRN", None);
         assert!(matches!(
             ev,
-            WalkEvent::SegmentMatch { loop_id: Some("2000C"), .. }
+            WalkEvent::SegmentMatch {
+                loop_id: Some("2000C"),
+                ..
+            }
         ));
 
         // 2100C -- NM1 inside 2000C
         let ev = walker.feed(b"NM1", None);
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2100C", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2100C",
+                ..
+            }
         ));
 
         // 2110C -- EQ
         let ev = walker.feed(b"EQ", None);
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2110C", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2110C",
+                ..
+            }
         ));
 
         // DTP inside 2110C
         let ev = walker.feed(b"DTP", None);
         assert!(matches!(
             ev,
-            WalkEvent::SegmentMatch { loop_id: Some("2110C"), .. }
+            WalkEvent::SegmentMatch {
+                loop_id: Some("2110C"),
+                ..
+            }
         ));
 
         // Trailer
@@ -659,28 +688,40 @@ mod tests {
         let ev = walker.feed(b"NM1", Some(b"41"));
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "1000A", .. }
+            WalkEvent::LoopStart {
+                loop_id: "1000A",
+                ..
+            }
         ));
 
         // PER in 1000A
         let ev = walker.feed(b"PER", None);
         assert!(matches!(
             ev,
-            WalkEvent::SegmentMatch { loop_id: Some("1000A"), .. }
+            WalkEvent::SegmentMatch {
+                loop_id: Some("1000A"),
+                ..
+            }
         ));
 
         // 1000B -- NM1 with qualifier "40"
         let ev = walker.feed(b"NM1", Some(b"40"));
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "1000B", .. }
+            WalkEvent::LoopStart {
+                loop_id: "1000B",
+                ..
+            }
         ));
 
         // Now into detail phase: 2000A
         let ev = walker.feed(b"HL", Some(b"20"));
         assert!(matches!(
             ev,
-            WalkEvent::LoopStart { loop_id: "2000A", .. }
+            WalkEvent::LoopStart {
+                loop_id: "2000A",
+                ..
+            }
         ));
     }
 
@@ -694,22 +735,46 @@ mod tests {
 
         // First 2000A
         let ev = walker.feed(b"HL", Some(b"20"));
-        assert!(matches!(ev, WalkEvent::LoopStart { loop_id: "2000A", .. }));
+        assert!(matches!(
+            ev,
+            WalkEvent::LoopStart {
+                loop_id: "2000A",
+                ..
+            }
+        ));
         walker.feed(b"NM1", None); // 2100A
 
         // 2000B
         let ev = walker.feed(b"HL", Some(b"21"));
-        assert!(matches!(ev, WalkEvent::LoopStart { loop_id: "2000B", .. }));
+        assert!(matches!(
+            ev,
+            WalkEvent::LoopStart {
+                loop_id: "2000B",
+                ..
+            }
+        ));
         walker.feed(b"NM1", None); // 2100B
 
         // First 2000C
         let ev = walker.feed(b"HL", Some(b"22"));
-        assert!(matches!(ev, WalkEvent::LoopStart { loop_id: "2000C", iteration: 1 }));
+        assert!(matches!(
+            ev,
+            WalkEvent::LoopStart {
+                loop_id: "2000C",
+                iteration: 1
+            }
+        ));
         walker.feed(b"NM1", None); // 2100C
 
         // Second 2000C (new subscriber)
         let ev = walker.feed(b"HL", Some(b"22"));
-        assert!(matches!(ev, WalkEvent::LoopStart { loop_id: "2000C", .. }));
+        assert!(matches!(
+            ev,
+            WalkEvent::LoopStart {
+                loop_id: "2000C",
+                ..
+            }
+        ));
         walker.feed(b"NM1", None); // 2100C
 
         walker.feed(b"SE", None);

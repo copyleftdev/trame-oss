@@ -203,10 +203,7 @@ mod tests {
         w.write_se(b"4", b"0001");
         w.write_ge(b"1", b"1");
         w.write_iea(b"1", b"000000001");
-        assert_eq!(
-            w.as_bytes(),
-            b"SE*4*0001~GE*1*1~IEA*1*000000001~"
-        );
+        assert_eq!(w.as_bytes(), b"SE*4*0001~GE*1*1~IEA*1*000000001~");
     }
 
     #[test]
@@ -292,7 +289,10 @@ mod tests {
         // Write segments, parse them back, verify identity.
         let delims = Delimiters::default();
         let mut w = Writer::new(delims);
-        w.write_segment(b"NM1", &[b"IL", b"1", b"DOE", b"JOHN", b"", b"", b"", b"MI", b"12345"]);
+        w.write_segment(
+            b"NM1",
+            &[b"IL", b"1", b"DOE", b"JOHN", b"", b"", b"", b"MI", b"12345"],
+        );
         w.write_segment(b"DTP", &[b"472", b"D8", b"20210901"]);
 
         let output = w.finish();

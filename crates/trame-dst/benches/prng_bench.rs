@@ -1,7 +1,7 @@
 // Copyright 2026 Trame Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-//! Criterion benchmarks for the SplitMix64 PRNG.
+//! Criterion benchmarks for the `SplitMix64` PRNG.
 
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use trame_dst::prng::{SplitMix64, fork_components};
