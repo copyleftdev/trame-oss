@@ -1,0 +1,37 @@
+[package]
+name = "trame-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[dependencies]
+afl = "0.15"
+trame-wire = { path = "../crates/trame-wire" }
+trame-schema = { path = "../crates/trame-schema" }
+
+# libFuzzer targets use cargo-fuzz, which has its own Cargo.toml
+# AFL++ targets are in fuzz/targets/
+
+[[bin]]
+name = "fuzz_parse_segments"
+path = "targets/parse_segments.rs"
+
+[[bin]]
+name = "fuzz_parse_interchange"
+path = "targets/parse_interchange.rs"
+
+[[bin]]
+name = "fuzz_delimiters"
+path = "targets/delimiters.rs"
+
+[[bin]]
+name = "fuzz_roundtrip"
+path = "targets/roundtrip.rs"
+
+[[bin]]
+name = "fuzz_schema_walk"
+path = "targets/schema_walk.rs"
+
+[[bin]]
+name = "fuzz_element_access"
+path = "targets/element_access.rs"

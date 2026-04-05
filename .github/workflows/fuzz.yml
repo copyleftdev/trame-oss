@@ -1,0 +1,78 @@
+name: Fuzz
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'  # Weekly on Monday at 4 AM UTC
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: 'Fuzzing duration in seconds'
+        required: false
+        default: '300'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  afl-fuzz:
+    name: AFL++ ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - fuzz_parse_segments
+          - fuzz_parse_interchange
+          - fuzz_delimiters
+          - fuzz_roundtrip
+          - fuzz_schema_walk
+          - fuzz_element_access
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: fuzz
+
+      - name: Install cargo-afl
+        run: cargo install cargo-afl
+
+      - name: Build fuzz targets
+        working-directory: fuzz
+        run: cargo afl build --release
+
+      - name: Run AFL++ (${{ matrix.target }})
+        working-directory: fuzz
+        run: |
+          timeout ${{ github.event.inputs.duration || '300' }}s \
+            cargo afl fuzz \
+              -i corpus/x12 \
+              -o out/${{ matrix.target }} \
+              -V ${{ github.event.inputs.duration || '300' }} \
+              target/release/${{ matrix.target }} \
+            || true
+        env:
+          AFL_SKIP_CPUFREQ: 1
+          AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES: 1
+          AFL_TRY_AFFINITY: 1
+
+      - name: Check for crashes
+        working-directory: fuzz
+        run: |
+          if [ -d "out/${{ matrix.target }}/default/crashes" ] && [ "$(ls -A out/${{ matrix.target }}/default/crashes 2>/dev/null)" ]; then
+            echo "::error::AFL++ found crashes in ${{ matrix.target }}!"
+            ls -la out/${{ matrix.target }}/default/crashes/
+            exit 1
+          else
+            echo "No crashes found in ${{ matrix.target }}"
+          fi
+
+      - name: Upload findings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: afl-findings-${{ matrix.target }}
+          path: fuzz/out/${{ matrix.target }}
+          retention-days: 30

@@ -6,6 +6,7 @@ members = [
     "crates/trame-dst",
     "crates/trame-cli",
 ]
+exclude = ["fuzz"]
 
 [workspace.package]
 version = "0.1.1"
