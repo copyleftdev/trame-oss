@@ -1,6 +1,7 @@
 [package]
 name = "trame-schema"
 description = "X12 transaction set grammars and schema definitions"
+readme = "README.md"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

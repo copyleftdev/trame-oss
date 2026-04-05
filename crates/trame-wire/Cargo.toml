@@ -1,6 +1,7 @@
 [package]
 name = "trame-wire"
 description = "Zero-copy streaming X12 EDI parser"
+readme = "README.md"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

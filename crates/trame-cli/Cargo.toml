@@ -1,6 +1,7 @@
 [package]
 name = "trame-cli"
 description = "CLI toolkit for X12 EDI operations"
+readme = "README.md"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

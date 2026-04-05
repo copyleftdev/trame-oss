@@ -1,6 +1,7 @@
 [package]
 name = "trame-dst"
 description = "Deterministic simulation testing and VOPR framework for trame"
+readme = "README.md"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
