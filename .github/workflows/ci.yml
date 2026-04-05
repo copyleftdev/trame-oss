@@ -31,9 +31,9 @@ jobs:
         with:
           toolchain: "1.85.0"
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test --workspace --exclude trame-wire -- --nocapture
+      - run: cargo test --workspace --exclude trame-wire
       - name: Run trame-wire unit tests (fast)
-        run: cargo test --package trame-wire --lib --nocapture
+        run: cargo test --package trame-wire --lib
 
   vopr:
     name: VOPR Fuzz
@@ -45,7 +45,7 @@ jobs:
           toolchain: "1.85.0"
       - uses: Swatinem/rust-cache@v2
       - name: Run VOPR fuzz suite (100 seeds x 50 docs)
-        run: cargo test --package trame-wire --test vopr_fuzz -- --nocapture
+        run: cargo test --package trame-wire --test vopr_fuzz
         env:
           TRAME_VOPR_SEEDS: "100"
           TRAME_VOPR_DOCS: "50"

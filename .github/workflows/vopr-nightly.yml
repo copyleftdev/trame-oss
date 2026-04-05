@@ -24,6 +24,6 @@ jobs:
           TRAME_VOPR_SEEDS: "1000"
           TRAME_VOPR_DOCS: "100"
         timeout-minutes: 30
-      - name: Run transform round-trip VOPR
-        run: cargo test --package trame-transform --test round_trip --release -- --nocapture
+      - name: Run all workspace tests in release mode
+        run: cargo test --workspace --release
         timeout-minutes: 10

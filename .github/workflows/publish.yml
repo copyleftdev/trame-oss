@@ -1,0 +1,50 @@
+name: Publish to crates.io
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  publish:
+    name: Publish crates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Verify tests pass
+        run: cargo test --workspace
+
+      - name: Publish trame-dst
+        run: cargo publish --package trame-dst
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      - name: Publish trame-wire
+        run: cargo publish --package trame-wire
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      # trame-schema depends on trame-wire, so publish after
+      - name: Wait for crates.io index
+        run: sleep 30
+
+      - name: Publish trame-schema
+        run: cargo publish --package trame-schema
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      - name: Wait for crates.io index
+        run: sleep 30
+
+      - name: Publish trame-cli
+        run: cargo publish --package trame-cli
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
