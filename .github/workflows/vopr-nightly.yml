@@ -1,0 +1,29 @@
+name: VOPR Nightly
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 3 AM UTC daily
+  workflow_dispatch:  # manual trigger
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  vopr-extended:
+    name: VOPR Extended (1000 seeds)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - uses: Swatinem/rust-cache@v2
+      - name: Run extended VOPR campaign
+        run: cargo test --package trame-wire --test vopr_fuzz --release -- --nocapture
+        env:
+          TRAME_VOPR_SEEDS: "1000"
+          TRAME_VOPR_DOCS: "100"
+        timeout-minutes: 30
+      - name: Run transform round-trip VOPR
+        run: cargo test --package trame-transform --test round_trip --release -- --nocapture
+        timeout-minutes: 10

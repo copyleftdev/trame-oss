@@ -1,0 +1,21 @@
+[package]
+name = "trame-wire"
+description = "Zero-copy streaming X12 EDI parser"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+
+[dev-dependencies]
+criterion = { workspace = true }
+trame-dst = { workspace = true }
+
+[lints]
+workspace = true
+
+[[bench]]
+name = "parser_bench"
+harness = false

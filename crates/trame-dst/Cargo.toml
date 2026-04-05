@@ -1,0 +1,20 @@
+[package]
+name = "trame-dst"
+description = "Deterministic simulation testing and VOPR framework for trame"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[lints]
+workspace = true
+
+[[bench]]
+name = "prng_bench"
+harness = false
